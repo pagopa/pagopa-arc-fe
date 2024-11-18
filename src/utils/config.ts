@@ -57,7 +57,7 @@ type Config = {
   deployPath: string;
 };
 
-const assistanceLink: string = 'nomeprodotto@assistenza.pagopa.it';
+const assistanceLink: string = 'pagamenti@assistenza.pagopa.it';
 
 const pagopaLink: RootLinkType = {
   label: 'PagoPA S.p.A.',
