@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import utils from 'utils';
 import { PaymentNoticeEnum, PaymentNoticeType } from 'models/PaymentNotice';
 import { addItem, deleteItem, toggleCartDrawer, isItemInCart } from 'store/CartStore';
+import { useStore } from 'store/GlobalStore';
 /**
  * This component is considered private and should not be used directly.
  * Instead, use `PaymentNotice.Card` for rendering the payment notice card.
@@ -27,7 +28,9 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
   const theme = useTheme();
   const { t } = useTranslation();
   const open = () => utils.modal.open(utils.modal.ModalId.PAYMENT_NOTICE_MODAL);
-
+  const {
+    state: { cart }
+  } = useStore();
   return paymentNotice?.type === PaymentNoticeEnum.SINGLE ? (
     <>
       <Grid container>
@@ -283,6 +286,8 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
                           size="medium"
                           onClick={() => {
                             const iuv = paymentNotice.paymentOptions.installments.iuv;
+                            // add a notification if the cart is full
+                            if (cart.items.length >= 5) return;
                             if (isItemInCart(iuv)) return deleteItem(iuv);
                             addItem({
                               amount: paymentNotice.paymentOptions.amountValue,

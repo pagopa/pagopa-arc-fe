@@ -13,12 +13,12 @@ import {
   NoticeImage,
   PaymentInstallmentType,
   PaymentNoticeEnum,
-  PaymentNoticeSingleType,
   PaymentNoticeType,
   PaymentOptionMultiple,
   PaymentOptionSingle,
   PaymentOptionType
 } from 'models/PaymentNotice';
+import { CartItem } from 'models/Cart';
 
 // This high order function is useful to 'decorate' existing function to add
 // the functionality to manage undefined (not optional) parameters and output a global character instead
@@ -211,16 +211,14 @@ const prepareNoticesData = (
   return { paymentNotices: transformed };
 };
 
-const singleNoticeToCartsRequest = (paymentNotice: PaymentNoticeSingleType) => ({
-  paymentNotices: [
-    {
-      amount: paymentNotice.paymentOptions.amountValue,
-      companyName: paymentNotice.paFullName,
-      description: paymentNotice.paymentOptions.description,
-      fiscalCode: paymentNotice.paTaxCode,
-      noticeNumber: paymentNotice.paymentOptions.installments.nav
-    }
-  ],
+const cartItemsToCartsRequest = (cartItems: CartItem[]) => ({
+  paymentNotices: cartItems.map((item) => ({
+    amount: item.amount,
+    companyName: item.paFullName,
+    description: item.description,
+    fiscalCode: item.paTaxCode,
+    noticeNumber: item.nav
+  })),
   returnUrls: {
     returnOkUrl: utils.config.paymentReturnUrl,
     returnCancelUrl: utils.config.paymentReturnUrl,
@@ -232,7 +230,7 @@ export default {
   prepareNoticesData,
   prepareRowsData,
   prepareNoticeDetailData,
-  singleNoticeToCartsRequest,
+  cartItemsToCartsRequest,
   toEuro,
   withMissingValue
 };

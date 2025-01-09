@@ -41,7 +41,8 @@ export const cartDrawerStyles = (theme: Theme): Record<string, SxProps> => ({
   items: {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
-    flexGrow: 1
+    flexGrow: 1,
+    overflowY: 'auto'
   },
   emptyCartMessage: {
     gap: theme.spacing(3),

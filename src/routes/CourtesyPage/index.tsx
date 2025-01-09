@@ -13,6 +13,8 @@ export const ErrorIconComponent: React.FC<ErrorIconComponentProps> = ({ code }) 
       return <img src="/pictograms/genericerror.svg" title="Error" aria-hidden="true" />;
     case '401':
       return <img src="/pictograms/expired.svg" title="Expired" aria-hidden="true" />;
+    case '422':
+      return <img src="/pictograms/genericerror.svg" title="Error" aria-hidden="true" />;
     default:
       return <img src="/pictograms/umbrella.svg" title="Something go wrong" aria-hidden="true" />;
   }

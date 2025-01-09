@@ -3,10 +3,9 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Divider, useTheme } from '@mui/material';
-import { toggleCartDrawer, deleteItem } from 'store/CartStore';
+import { toggleCartDrawer } from 'store/CartStore';
 import { ButtonNaked } from '@pagopa/mui-italia/dist/components/ButtonNaked';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -14,49 +13,24 @@ import { ArcRoutes } from 'routes/routes';
 import { cartDrawerStyles } from './CartDrawer.styles';
 import { useStore } from 'store/GlobalStore';
 import { toEuroOrMissingValue } from 'utils/converters';
-
-interface CartItem {
-  title: string;
-  description: string;
-  amount: number;
-  id: string;
-}
-
-const CartItem = (props: CartItem) => {
-  const theme = useTheme();
-  const styles = cartDrawerStyles(theme);
-  const { t } = useTranslation();
-  const { title, description, amount, id } = props;
-
-  return (
-    <Stack sx={styles.item}>
-      <Stack>
-        <Typography variant="body1" fontWeight={600}>
-          {title}
-        </Typography>
-        <Typography variant="caption">{description}</Typography>
-      </Stack>
-      <Stack sx={{ ...styles.item, marginTop: 0, marginBottom: 0 }}>
-        <Typography variant="body1" fontWeight={600} mr={2}>
-          {toEuroOrMissingValue(amount)}
-        </Typography>
-        <ButtonNaked
-          color="error"
-          onClick={() => deleteItem(id)}
-          aria-label={t('ui.a11y.removeCartItem')}
-          name="removeCartItemButton">
-          <DeleteIcon />
-        </ButtonNaked>
-      </Stack>
-    </Stack>
-  );
-};
+import { usePostCarts } from 'hooks/usePostCarts';
+import { useUserEmail } from 'hooks/useUserEmail';
+import CartItem from './CartItem';
 
 export const CartDrawer = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const styles = cartDrawerStyles(theme);
   const navigate = useNavigate();
+
+  const carts = usePostCarts({
+    onSuccess: (url) => {
+      window.location.replace(url);
+    },
+    onError: () => navigate(`${ArcRoutes.COURTESY_PAGE}?errorcode=422`)
+  });
+
+  const email = useUserEmail();
 
   const {
     state: { cart }
@@ -65,6 +39,10 @@ export const CartDrawer = () => {
   const onEmptyButtonClick = () => {
     toggleCartDrawer();
     navigate(ArcRoutes.PAYMENT_NOTICES);
+  };
+
+  const onPayButton = () => {
+    carts.mutate({ notices: cart.items, email });
   };
 
   return (
@@ -104,8 +82,8 @@ export const CartDrawer = () => {
                 {cart.items.map((item) => (
                   <CartItem
                     key={item.iuv}
-                    id={item.iuv}
-                    title={item.paFullName}
+                    iuv={item.iuv}
+                    paFullName={item.paFullName}
                     description={item.description}
                     amount={item.amount}
                   />
@@ -119,9 +97,14 @@ export const CartDrawer = () => {
             <Button variant="outlined" size="large" onClick={onEmptyButtonClick}>
               {t('app.cart.items.back')}
             </Button>
-            <Button variant="contained" size="large">
-              {t('app.cart.items.pay')}
-            </Button>
+            {
+              // Show the pay button only if the cart is not empty
+              cart.items.length > 0 && (
+                <Button variant="contained" size="large" onClick={onPayButton}>
+                  {t('app.cart.items.pay')}
+                </Button>
+              )
+            }
           </Stack>
         </Stack>
       </Box>
