@@ -281,6 +281,19 @@ const singleNoticeToCartsRequest = (paymentNotice: PaymentNoticeDetailsSINGLE) =
   }
 });
 
+/**
+ * Capitalizes the first letter of each word in a string.
+ * @param str - The string to capitalize.
+ * @returns The capitalized string.
+ */
+export const capitalizeFirstLetter = (str: string): string => {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
 export default {
   normalizePaymentNotice,
   normalizePaymentNoticeDetails,
@@ -289,5 +302,6 @@ export default {
   prepareRowsData,
   singleNoticeToCartsRequest,
   toEuro,
-  withMissingValue
+  withMissingValue,
+  capitalizeFirstLetter: withMissingValue(capitalizeFirstLetter)
 };

@@ -53,8 +53,9 @@ const Dashboard = () => {
         mb={5}>
         <Typography variant="h3" aria-label={t('app.dashboard.greeting')}>
           {userInfo?.name &&
-            userInfo?.familyName &&
-            t('app.dashboard.title', { username: `${userInfo.name} ${userInfo.familyName}` })}
+            t('app.dashboard.title', {
+              username: utils.converters.capitalizeFirstLetter(userInfo.name)
+            })}
         </Typography>
         <PaymentButton />
       </Stack>

@@ -230,3 +230,18 @@ describe('prepare notice detail', () => {
     ).toEqual(JSON.stringify(mockNoticeDetails));
   });
 });
+
+describe('capitalizeFirstLetter function', () => {
+  it('should convert correctly', () => {
+    expect(utils.converters.capitalizeFirstLetter('marco')).toEqual('Marco');
+    expect(utils.converters.capitalizeFirstLetter('marco polo')).toEqual('Marco Polo');
+    expect(utils.converters.capitalizeFirstLetter('MARCO')).toEqual('Marco');
+    expect(utils.converters.capitalizeFirstLetter('MARCO POLO')).toEqual('Marco Polo');
+
+    expect(utils.converters.capitalizeFirstLetter('Marco polo')).toEqual('Marco Polo');
+    expect(utils.converters.capitalizeFirstLetter('mArCo')).toEqual('Marco');
+    expect(utils.converters.capitalizeFirstLetter('MarCo pOlO')).toEqual('Marco Polo');
+
+    expect(utils.converters.capitalizeFirstLetter(undefined)).toEqual(utils.config.missingValue);
+  });
+});

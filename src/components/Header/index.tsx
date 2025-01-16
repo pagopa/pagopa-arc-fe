@@ -40,8 +40,8 @@ export const Header = (props: HeaderProps) => {
   const jwtUser: JwtUser | undefined = userInfo
     ? {
         id: userInfo?.userId,
-        name: userInfo?.name,
-        surname: userInfo?.familyName,
+        name: utils.converters.capitalizeFirstLetter(userInfo?.name),
+        surname: utils.converters.capitalizeFirstLetter(userInfo?.familyName),
         email: ''
       }
     : undefined;

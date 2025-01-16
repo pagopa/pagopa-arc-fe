@@ -62,12 +62,12 @@ export default function UserRoute() {
             <QueryLoader queryKey="userInfo" loaderComponent={<UserInfoSkeleton />}>
               <UserRowInfo
                 label={t('app.user.info.name')}
-                data={data?.name || utils.config.missingValue}
+                data={utils.converters.capitalizeFirstLetter(data?.name)}
                 testid="app.user.info.name"
               />
               <UserRowInfo
                 label={t('app.user.info.surname')}
-                data={data?.familyName || utils.config.missingValue}
+                data={utils.converters.capitalizeFirstLetter(data?.familyName)}
                 testid="app.user.info.surname"
               />
               <UserRowInfo

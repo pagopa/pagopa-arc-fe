@@ -70,8 +70,8 @@ describe('DashboardRoute', () => {
     (useStore as Mock).mockReturnValue({ setState });
     (useUserInfo as Mock).mockReturnValue({
       userInfo: {
-        name: 'test',
-        familyName: 'test'
+        name: 'Marco',
+        familyName: 'Polo'
       }
     });
   });
@@ -139,7 +139,7 @@ describe('DashboardRoute', () => {
   it('displays correct user info in the dashboard title', async () => {
     render(<DashboardWithState />);
     await waitFor(() => {
-      expect(screen.getByText('greetings, test test')).toBeInTheDocument(); // Assuming 'Welcome' is part of the t function
+      expect(screen.getByText('greetings, Marco')).toBeInTheDocument(); // Assuming 'Welcome' is part of the t function
     });
   });
 });
