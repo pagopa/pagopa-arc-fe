@@ -1,6 +1,13 @@
 import React from 'react';
 import { ISidebarMenuItem } from 'models/SidebarMenuItem';
-import { ListItem, ListItemButton, ListItemIcon, ListItemText, useTheme } from '@mui/material';
+import {
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  useTheme
+} from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { SvgIconComponent } from '@mui/icons-material';
 import { alpha } from '@mui/material';
@@ -18,7 +25,7 @@ function renderIcon(Icon: SvgIconComponent | (() => JSX.Element)) {
 export const SidebarMenuItem = ({ collapsed, item, onClick }: Props) => {
   const theme = useTheme();
 
-  return (
+  const MenuItem = (
     <ListItem disablePadding>
       <ListItemButton
         end={item.end || false}
@@ -54,5 +61,28 @@ export const SidebarMenuItem = ({ collapsed, item, onClick }: Props) => {
         )}
       </ListItemButton>
     </ListItem>
+  );
+
+  return collapsed ? (
+    <Tooltip
+      title={item.label}
+      placement="right"
+      arrow
+      slotProps={{
+        popper: {
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, -24]
+              }
+            }
+          ]
+        }
+      }}>
+      {MenuItem}
+    </Tooltip>
+  ) : (
+    MenuItem
   );
 };
