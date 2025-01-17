@@ -26,7 +26,6 @@ export const SidebarMenuItem = ({ collapsed, item, onClick }: Props) => {
         to={item.route}
         onClick={onClick}
         sx={{
-          px: 3,
           '&.hover': {
             backgroundColor: 'none'
           },
@@ -44,7 +43,11 @@ export const SidebarMenuItem = ({ collapsed, item, onClick }: Props) => {
             }
           }
         }}>
-        {item.icon && <ListItemIcon aria-hidden="true">{renderIcon(item.icon)}</ListItemIcon>}
+        {item.icon && (
+          <ListItemIcon aria-hidden="true" sx={{ height: 27, width: 27 }}>
+            {renderIcon(item.icon)}
+          </ListItemIcon>
+        )}
         {!collapsed && (
           <ListItemText
             id={`menu-item-${item.label.toLowerCase()}`}

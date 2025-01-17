@@ -51,7 +51,7 @@ export const Sidebar: React.FC = () => {
     },
     {
       label: t('menu.receipts.menuTitle'),
-      icon: ReceiptLongIcon,
+      icon: () => <ReceiptLongIcon sx={{ marginLeft: '-1px' }} />,
       route: ArcRoutes.TRANSACTIONS
     }
   ];
@@ -105,6 +105,7 @@ export const Sidebar: React.FC = () => {
                 placement="right"
                 title={t(!collapsed ? 'sidebar.collapse' : 'sidebar.expand')}>
                 <IconButton
+                  sx={{ padding: { xs: 1, lg: 0 } }}
                   data-testid="hamburgerButton"
                   aria-label={t(!collapsed ? 'sidebar.collapse' : 'sidebar.expand')}
                   onClick={() => changeMenuState()}
