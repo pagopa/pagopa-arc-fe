@@ -38,7 +38,9 @@ export const sidebarStyles = (theme: Theme, collapsed: boolean): Record<string, 
   list: {
     [theme.breakpoints.down('lg')]: {
       display: collapsed ? 'none' : 'inline-block'
-    }
+    },
+    top: 0,
+    position: 'sticky'
   },
   hamburgerBox: {
     marginTop: 'auto',
