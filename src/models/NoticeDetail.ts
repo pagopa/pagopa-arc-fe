@@ -21,6 +21,7 @@ export interface NoticeDetail {
   fee: string;
   total: string;
   status: string;
+  origin: InfoNoticeDTO['origin'];
 }
 
 export enum BRANDS {

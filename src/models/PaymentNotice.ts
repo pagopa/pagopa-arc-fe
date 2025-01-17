@@ -1,4 +1,10 @@
-import { InstallmentDTO, PaymentNoticeDTO, PaymentOptionDTO } from '../../generated/apiClient';
+import {
+  InstallmentDTO,
+  PaymentNoticeDetailsDTO,
+  PaymentNoticeDTO,
+  PaymentOptionDetailsDTO,
+  PaymentOptionDTO
+} from '../../generated/apiClient';
 
 export enum PaymentNoticeEnum {
   SINGLE = 'single',
@@ -47,3 +53,32 @@ export type PaymentNoticeSingleType = PaymentNoticeEnhanced & {
 };
 
 export type PaymentNoticeType = PaymentNoticeSingleType | PaymentNoticeMultipleType;
+
+// PAYMENT NOTICE DETAILS
+
+export type PaymentNoticeDetailsEnhanced = Omit<PaymentNoticeDetailsDTO, 'paymentOptions'> & {
+  iupd: string;
+  paTaxCode: string;
+  paFullName: string;
+};
+
+export type PaymentOptionsDetailsType = Omit<PaymentOptionDetailsDTO, 'amount'> & {
+  nav: string;
+  iuv: string;
+  dueDate: string;
+  description: string;
+  amount: string;
+  amountValue: number;
+};
+
+export type PaymentNoticeDetailsSINGLE = PaymentNoticeDetailsEnhanced & {
+  type: PaymentNoticeEnum.SINGLE;
+  paymentOptions: PaymentOptionsDetailsType;
+};
+
+export type PaymentNoticeDetailsMULTIPLE = PaymentNoticeDetailsEnhanced & {
+  type: PaymentNoticeEnum.MULTIPLE;
+  paymentOptions: PaymentOptionsDetailsType[];
+};
+
+export type PaymentNoticeDetailsType = PaymentNoticeDetailsSINGLE | PaymentNoticeDetailsMULTIPLE;

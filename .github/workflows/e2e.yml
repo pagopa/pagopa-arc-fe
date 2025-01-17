@@ -12,7 +12,7 @@ env:
 jobs:
   testing-e2e:
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@7c12f8017d5436eb855f1ed4399f037a36fbd9e8 # v2
@@ -31,11 +31,11 @@ jobs:
           echo VERSION=${{ github.sha }} >> .env
           cat .env
         working-directory: fe
-  
+
       - name: Install FE dependecies
         run: yarn install --immutable
         working-directory: fe
-  
+
       - name: run fe
         run: yarn start &
         working-directory: fe
@@ -44,13 +44,13 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           repository: pagopa/arc-fe-e2e
-          ref: main 
+          ref: main
           path: e2e
 
       - name: Install E2E dependecies
         run: yarn install --immutable
         working-directory: e2e
-      
+
       - name: Install playwright browsers
         run: yarn playwright install chromium
         working-directory: e2e

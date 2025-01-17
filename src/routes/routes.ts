@@ -10,7 +10,7 @@ export const ArcRoutes = {
   COURTESY_PAGE: `${deployPath}/courtesy`,
   LOGIN: `${deployPath}/login`,
   ASSISTANCE: `${deployPath}/assistance`,
-  PAYMENT_NOTICE_DETAIL: `${deployPath}/payment-notices/:id`,
+  PAYMENT_NOTICE_DETAIL: `${deployPath}/payment-notices/:id/:paTaxCode`,
   AUTH_CALLBACK: `${deployPath}/auth-callback`,
   PRIVACY_PAGE: `${deployPath}/privacy_page`,
   RESOURCES: `${deployPath}/resources`

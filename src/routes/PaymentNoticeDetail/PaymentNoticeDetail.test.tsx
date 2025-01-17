@@ -1,46 +1,85 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import PaymentNoticeDetail from './index';
-import '@testing-library/jest-dom';
-import { MemoryRouter } from 'react-router-dom';
-import { useStore } from 'store/GlobalStore';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, useLoaderData } from 'react-router-dom';
+import { UseQueryResult } from '@tanstack/react-query';
+import { PaymentNoticeDetailsType } from 'models/PaymentNotice';
+import { ArcRoutes } from 'routes/routes';
+import PaymentNoticeDetail from '.';
+import { Helmet } from 'react-helmet';
 
-vi.mock('store/GlobalStore', () => ({
-  useStore: vi.fn()
+// Mock dependencies
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useLoaderData: vi.fn(),
+    Navigate: ({ to }: { to: string }) => <div>Redirected to {to}</div>
+  };
+});
+
+vi.mock('components/PaymentNotice', () => ({
+  PaymentNotice: {
+    Detail: ({ paymentNotice }: { paymentNotice: PaymentNoticeDetailsType }) => (
+      <div>PaymentNotice.Detail: {paymentNotice?.iupd}</div>
+    )
+  }
 }));
-vi.mock('store/PaymentNoticeStore', () => ({
-  paymentNoticeState: { removeItem: vi.fn(), state: null }
-}));
 
-const queryClient = new QueryClient();
+describe('PaymentNoticeDetail', () => {
+  const mockUseLoaderData = vi.fn();
 
-describe('PaymentNoticeDetailRoute', () => {
-  it('renders without crashing empty notice', () => {
-    (useStore as Mock).mockReturnValue({ state: { paymentNotice: null } });
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (useLoaderData as Mock).mockImplementation(mockUseLoaderData); // Ensure the mock works
+  });
 
+  const renderComponent = () =>
     render(
       <MemoryRouter>
         <PaymentNoticeDetail />
       </MemoryRouter>
     );
-  });
-  it('renders without crashing', () => {
-    const notice = {
-      debtorFullName: 'ACI Automobile Club Italia',
-      debtorTaxCode: 'HSLZYB90L59D030S',
-      debtorType: 'F',
-      image: { alt: 'ACI', src: 'string' }
-    };
-    (useStore as Mock).mockReturnValue({ state: { paymentNotice: notice } });
 
-    render(
-      <MemoryRouter>
-        <QueryClientProvider client={queryClient}>
-          <PaymentNoticeDetail />
-        </QueryClientProvider>
-      </MemoryRouter>
-    );
+  it('renders the payment notice details when query is successful', () => {
+    const mockNoticeDetailQuery: UseQueryResult<PaymentNoticeDetailsType, Error> = {
+      data: { iupd: '12345' } as PaymentNoticeDetailsType,
+      isSuccess: true,
+      isError: false
+    } as UseQueryResult<PaymentNoticeDetailsType, Error>;
+
+    mockUseLoaderData.mockReturnValue(() => mockNoticeDetailQuery);
+
+    renderComponent();
+
+    expect(screen.getByText('PaymentNotice.Detail: 12345')).toBeInTheDocument();
+  });
+
+  it('redirects to payment notices route when query fails', () => {
+    const mockNoticeDetailQuery: UseQueryResult<PaymentNoticeDetailsType, Error> = {
+      isSuccess: false,
+      isError: true
+    } as UseQueryResult<PaymentNoticeDetailsType, Error>;
+
+    mockUseLoaderData.mockReturnValue(() => mockNoticeDetailQuery);
+
+    renderComponent();
+
+    expect(screen.getByText(`Redirected to ${ArcRoutes.PAYMENT_NOTICES}`)).toBeInTheDocument();
+  });
+
+  it('renders the page title', () => {
+    const mockNoticeDetailQuery: UseQueryResult<PaymentNoticeDetailsType, Error> = {
+      isSuccess: true,
+      isError: false,
+      data: { iupd: '12345' } as PaymentNoticeDetailsType
+    } as UseQueryResult<PaymentNoticeDetailsType, Error>;
+
+    mockUseLoaderData.mockReturnValue(() => mockNoticeDetailQuery);
+
+    renderComponent();
+    const helmet = Helmet.peek();
+    expect(helmet.title).toContain('pageTitles.paymentnotice');
+    expect(helmet.title).toContain('app.title');
   });
 });

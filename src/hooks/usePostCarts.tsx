@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import utils from 'utils';
-import { PaymentNoticeSingleType } from 'models/PaymentNotice';
+import { PaymentNoticeDetailsSINGLE } from 'models/PaymentNotice';
 
 const getRedirect = (data: string) => {
   const re = /URL=([^"]+)/;
@@ -18,7 +18,7 @@ export const usePostCarts = ({ onSuccess }: { onSuccess: (url: string) => void }
       singleNotice,
       email
     }: {
-      singleNotice: PaymentNoticeSingleType;
+      singleNotice: PaymentNoticeDetailsSINGLE;
       email?: string;
     }) => {
       const request = utils.converters.singleNoticeToCartsRequest(singleNotice);

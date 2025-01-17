@@ -4,6 +4,8 @@ import utils from 'utils';
 import { ZodSchema } from 'zod';
 import * as zodSchema from '../../generated/zod-schema';
 import { AxiosError } from 'axios';
+import { Params } from 'react-router-dom';
+import converters from './converters';
 
 const parseAndLog = <T>(schema: ZodSchema, data: T, throwError: boolean = true): void | never => {
   const result = schema.safeParse(data);
@@ -73,6 +75,22 @@ const getPaymentNotices = () =>
     }
   });
 
+const getPaymentNoticeDetails = ({ params: { id, paTaxCode } }: { params: Params }) => {
+  if (!id || !paTaxCode) throw new Error('id and paTaxCode are required');
+
+  return () =>
+    useQuery({
+      queryKey: ['paymentNoticeDetails'],
+      queryFn: async () => {
+        const { data } = await utils.apiClient.paymentNotices.getPaymentNoticesDetails(id, {
+          paTaxCode
+        });
+        parseAndLog(zodSchema.paymentNoticesListDTOSchema, data);
+        return converters.normalizePaymentNoticeDetails(data);
+      }
+    });
+};
+
 export const getReceiptData = async (transactionId: string) => {
   const { data } = await utils.apiClient.notices.getNoticeReceipt(transactionId, {
     format: 'blob'
@@ -131,6 +149,7 @@ export const getTokenOneidentity = async (request: Request) => {
 
 export default {
   getPaymentNotices,
+  getPaymentNoticeDetails,
   getReceiptData,
   getTokenOneidentity,
   getNoticeDetails,

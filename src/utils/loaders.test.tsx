@@ -16,6 +16,8 @@ import * as schemas from '../../generated/zod-schema';
 // if a field is set as optionaal
 // it will be generated as undefined
 import { createMock } from 'zodock';
+import { Params } from 'react-router-dom';
+import { mockNoticeDetails, mockPaymentNoticeDetails } from 'stories/utils/PaymentNoticeMocks';
 
 // Mock the utils module
 vi.mock('./utils', () => {
@@ -196,6 +198,42 @@ describe('api loaders', () => {
       const result = await loaders.getTokenOneidentity(request);
 
       expect(result).toBe(403);
+    });
+  });
+});
+
+describe('Payment Notices API', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const queryClient = new QueryClient();
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <StoreProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </StoreProvider>
+  );
+
+  it('getPaymentNoticeDetails calls API and schema parser correctly', async () => {
+    const apiMock = vi
+      .spyOn(utils.apiClient.paymentNotices, 'getPaymentNoticesDetails')
+      .mockResolvedValue({ data: mockPaymentNoticeDetails } as AxiosResponse);
+
+    const params: Params = {
+      id: mockPaymentNoticeDetails.iupd,
+      paTaxCode: mockPaymentNoticeDetails.paTaxCode
+    };
+
+    const { result } = renderHook(() => loaders.getPaymentNoticeDetails({ params }), {
+      wrapper
+    });
+
+    const query = renderHook(() => result.current(), { wrapper });
+
+    await waitFor(() => {
+      expect(apiMock).toHaveBeenCalledWith(params.id, { paTaxCode: params.paTaxCode });
+      expect(query.result.current.isSuccess).toBeTruthy();
+      expect(query.result.current.data).toEqual(mockNoticeDetails);
     });
   });
 });

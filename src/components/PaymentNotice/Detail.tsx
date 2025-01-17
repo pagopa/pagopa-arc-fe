@@ -14,7 +14,7 @@ import { CopyToClipboardButton } from '@pagopa/mui-italia';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import utils from 'utils';
-import { PaymentNoticeEnum, PaymentNoticeType } from 'models/PaymentNotice';
+import { PaymentNoticeDetailsType, PaymentNoticeEnum } from 'models/PaymentNotice';
 import { usePostCarts } from 'hooks/usePostCarts';
 import { useUserEmail } from 'hooks/useUserEmail';
 
@@ -25,11 +25,12 @@ import { useUserEmail } from 'hooks/useUserEmail';
  * @component
  * @private
  */
-export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType }) => {
+export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeDetailsType }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const open = () => utils.modal.open(utils.modal.ModalId.PAYMENT_NOTICE_MODAL);
   const email = useUserEmail();
+
   const carts = usePostCarts({
     onSuccess: (url) => {
       window.location.replace(url);
@@ -47,7 +48,7 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
             <Grid item xs={12} md={7}>
               <Card
                 sx={{
-                  padding: 2
+                  padding: { xs: 0, md: 2 }
                 }}>
                 <CardActions>
                   <Stack spacing={2} width={'100%'} alignContent={'center'}>
@@ -193,13 +194,13 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
                             fontWeight={600}
                             color={theme.palette.primary.main}
                             sx={{ textDecoration: 'underline', wordBreak: 'break-word' }}>
-                            {paymentNotice.paymentOptions.installments.iuv}
+                            {paymentNotice.paymentOptions.iuv}
                           </Typography>
                         </Grid>
                       </Grid>
                       <Grid item xs={2} sm={1}>
                         <CopyToClipboardButton
-                          value={paymentNotice.paymentOptions.installments.iuv}
+                          value={paymentNotice.paymentOptions.iuv}
                           color="primary"
                         />
                       </Grid>
@@ -254,7 +255,7 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
                       </Grid>
                       <Grid item xs={12} sm={6} textAlign={{ sm: 'right' }}>
                         <Typography variant="body1" fontSize={16} fontWeight={700} component="dd">
-                          {paymentNotice.paymentOptions.installments.dueDate}
+                          {paymentNotice.paymentOptions.dueDate}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -269,7 +270,7 @@ export const _Detail = ({ paymentNotice }: { paymentNotice: PaymentNoticeType })
                       </Grid>
                       <Grid item xs={12} sm={6} textAlign={{ sm: 'right' }}>
                         <Typography variant="body1" fontSize={24} fontWeight={700} component="dd">
-                          {paymentNotice.paymentOptions.installments.amount}
+                          {paymentNotice.paymentOptions.amount}
                         </Typography>
                       </Grid>
                     </Grid>

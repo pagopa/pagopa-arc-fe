@@ -34,13 +34,18 @@ const PullPaymentsModal = (props: { open: boolean }) => {
         <Card
           sx={{
             padding: 3,
-            width: '50%'
+            width: { xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '50%' },
+            minWidth: 300
           }}>
           <CardActions>
             <Stack spacing={2} width={'100%'}>
               <Typography variant="h4">{t('app.paymentNotices.optin.title')}</Typography>
               <Typography variant="body1">{t('app.paymentNotices.optin.body')}</Typography>
-              <Stack pt={2} direction={'row'} spacing={2} justifyContent={'end'}>
+              <Stack
+                pt={2}
+                direction={'row'}
+                spacing={2}
+                justifyContent={{ xs: 'center', sm: 'flex-end' }}>
                 <Button
                   variant="outlined"
                   size="large"

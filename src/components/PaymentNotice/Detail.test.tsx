@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { mockNotice } from 'stories/utils/PaymentNoticeMocks';
-import { PaymentNoticeEnum, PaymentNoticeMultipleType } from 'models/PaymentNotice';
+import { mockNoticeDetails } from 'stories/utils/PaymentNoticeMocks';
+import { PaymentNoticeDetailsMULTIPLE, PaymentNoticeEnum } from 'models/PaymentNotice';
 import { PaymentNotice } from './PaymentNotice';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { i18nTestSetup } from '__tests__/i18nTestSetup';
@@ -23,13 +23,14 @@ describe('Detail Component', () => {
   };
 
   it('renders the single notice data', () => {
-    renderWithTheme(<PaymentNotice.Detail paymentNotice={mockNotice} />);
+    renderWithTheme(<PaymentNotice.Detail paymentNotice={mockNoticeDetails} />);
 
-    expect(screen.getByText(mockNotice.paymentOptions.installments.iuv)).toBeInTheDocument();
-    expect(screen.getByText(mockNotice.paFullName)).toBeInTheDocument();
-    expect(screen.getByText(mockNotice.paymentOptions.description)).toBeInTheDocument();
-    expect(screen.getAllByText(mockNotice.paymentOptions.amount).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(mockNotice.paymentOptions.dueDate).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(mockNoticeDetails.paymentOptions.iuv)).toBeInTheDocument();
+    expect(screen.getByText(mockNoticeDetails.paFullName)).toBeInTheDocument();
+    expect(screen.getByText(mockNoticeDetails.paymentOptions.description)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(mockNoticeDetails.paymentOptions.dueDate).length
+    ).toBeGreaterThanOrEqual(1);
   });
 
   it('does not render multiple notice data', () => {
@@ -37,9 +38,9 @@ describe('Detail Component', () => {
       <PaymentNotice.Detail
         paymentNotice={
           {
-            ...mockNotice,
+            ...mockNoticeDetails,
             type: PaymentNoticeEnum.MULTIPLE
-          } as unknown as PaymentNoticeMultipleType
+          } as unknown as PaymentNoticeDetailsMULTIPLE
         }
       />
     );

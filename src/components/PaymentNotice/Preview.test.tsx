@@ -1,9 +1,12 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import utils from 'utils';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { PaymentNotice } from './index';
 import { i18nTestSetup } from '__tests__/i18nTestSetup';
+import { ArcRoutes } from 'routes/routes';
+import { Signal } from '@preact/signals-react';
 
 i18nTestSetup({});
 
@@ -15,6 +18,13 @@ vi.mock('@pagopa/mui-italia', async () => {
     IllusSharingInfo
   };
 });
+
+const navigate = vi.fn();
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => navigate
+}));
+
+vi.mock('utils');
 
 describe('PaymentNotice.Preview Component', () => {
   const renderWithTheme = (ui: React.ReactElement) => {
@@ -65,5 +75,33 @@ describe('PaymentNotice.Preview Component', () => {
     renderWithTheme(<PaymentNotice.Preview />);
 
     expect(screen.queryByText('Illustration')).not.toBeInTheDocument();
+  });
+
+  it('Call use navigate on CTA click if the user did the opt-in', () => {
+    vi.spyOn(utils.storage.pullPaymentsOptIn, 'get').mockReturnValue({
+      value: true
+    } as Signal<boolean>);
+
+    renderWithTheme(<PaymentNotice.Preview />);
+
+    const button = screen.getByRole('button');
+    fireEvent.click(button);
+
+    expect(utils.modal.open).not.toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(ArcRoutes.PAYMENT_NOTICES);
+  });
+
+  it('Open a modal on CTA click if the user needs to do the opt-in', () => {
+    vi.spyOn(utils.storage.pullPaymentsOptIn, 'get').mockReturnValue({
+      value: false
+    } as Signal<boolean>);
+
+    renderWithTheme(<PaymentNotice.Preview />);
+
+    const button = screen.getByRole('button');
+    fireEvent.click(button);
+
+    expect(utils.modal.open).toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
   });
 });

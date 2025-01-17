@@ -35,6 +35,7 @@ export default function TransactionDetail({ noticeData }: { noticeData: NoticeDe
   const isPaypal = noticeData.paymentMethod === 'PPAL';
   const isCard = noticeData.paymentMethod === 'CP' || noticeData.paymentMethod === 'PO';
   const isUnManaged = !isPaypal && !isCard;
+  const hasReceipt = noticeData.origin != 'PM';
 
   return (
     <Grid container>
@@ -44,24 +45,34 @@ export default function TransactionDetail({ noticeData }: { noticeData: NoticeDe
         alignItems={{ md: 'center' }}
         width="100%"
         gap={3}>
-        <Stack direction={{ sm: 'row' }} alignItems={{ xs: 'flex-start', md: 'center' }} gap={2}>
+        <Stack
+          direction={{ md: 'row' }}
+          gap={3}
+          justifyContent={{ md: 'space-between' }}
+          width="inherit">
           <Typography variant="h2" fontSize={{ xs: 28, md: 32 }} sx={{ wordBreak: 'break-word' }}>
             {t('app.transactionDetail.title')}
           </Typography>
+          {hasReceipt && (
+            <Button
+              data-testid="receipt-download-btn"
+              endIcon={<Download />}
+              sx={{ width: { xs: '100%', sm: 'fit-content' } }}
+              size="large"
+              onClick={() => {
+                getReceipt(noticeData.eventId);
+              }}
+              variant="contained">
+              {t('app.transactionDetail.downloadReceipt')}
+            </Button>
+          )}
         </Stack>
-        <Button
-          data-testid="receipt-download-btn"
-          endIcon={<Download />}
-          sx={{ width: { xs: '100%', sm: 'fit-content' } }}
-          size="large"
-          onClick={() => {
-            getReceipt(noticeData.eventId);
-          }}
-          variant="contained">
-          {t('app.transactionDetail.downloadReceipt')}
-        </Button>
       </Stack>
-
+      {!hasReceipt && (
+        <Alert severity="info" variant="outlined" sx={{ mt: 3 }}>
+          {t('app.transactionDetail.noReceipt')}
+        </Alert>
+      )}
       <Stack spacing={2} mt={3} width={'100%'}>
         <Snackbar
           autoHideDuration={6000}

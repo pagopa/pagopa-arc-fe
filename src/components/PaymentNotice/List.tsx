@@ -21,7 +21,12 @@ export const _List = ({ paymentNotices }: { paymentNotices: PaymentNoticeType[] 
 
   return (
     <Stack gap={3}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" component="header">
+      <Stack
+        direction={{ sm: 'row', xs: 'column' }}
+        gap={1}
+        justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        component="header">
         <Typography variant="h6" component="h2" role="label" id="paymentNoticesListLabel">
           {`${t('app.paymentNotices.found', { count: paymentNotices.length })}`}
         </Typography>
